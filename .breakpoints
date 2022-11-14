@@ -1,3 +1,12 @@
 {
-  "files": {}
+  "files": {
+    "bruta_mayor40.csv": [
+      {
+        "id": "caf84764-4c20-445a-bb33-0ef2f34864fc",
+        "line": 4307,
+        "version": 2,
+        "index": 75295
+      }
+    ]
+  }
 }
