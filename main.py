@@ -11,10 +11,6 @@ import math
 
 df = pd.read_csv('bruta_mayor40.csv', delimiter = "," )
 
-RCPT1 = pd.DataFrame()
-
-
-
 #print(df.shape)
 #print(df.info)
 
@@ -43,6 +39,7 @@ lista_sum_sorteados = []
 lista_med_sorteados = []
 
 
+
 op = 0
 
 tamanno_muestra = 0
@@ -56,9 +53,9 @@ def proceso(Cantsort,lista_med,lista_sum):
   lista_num_sorteados = []
   lista_med_sorteados = []
   lista_sum_sorteados = []
+  lista_tpunto = []
   
-  
-  while i < Cantsort: 
+  while i < Cantsort * 2: 
       
     i += 1
 
@@ -74,25 +71,38 @@ def proceso(Cantsort,lista_med,lista_sum):
       lista_med_sorteados.append(lista_med[num_sorteado - 1])
       
       lista_sum_sorteados.append(lista_sum[num_sorteado - 1])
+
+      for x in range(0,len(lista_sum_sorteados)):
   
-      RCPT1 = pd.DataFrame({'Suministros' : lista_sum_sorteados, 'Medidores' : lista_med_sorteados}) 
+        if x % 2 == 0:
+  
+          tpunto = "PRI"
+  
+        else:
+  
+          tpunto = "ALT"
+
+      lista_tpunto.append(tpunto)
+
+  
+
+      RCPT1 = pd.DataFrame({'Suministros' : lista_sum_sorteados, 'Medidores' : lista_med_sorteados, 'Codigo' : lista_tpunto}) 
+
+      
       
       
 
       
       
-    else:
+  else:
 
-      print("No te haga el vivo")
+    print("No te haga' el vivo")
       
-      i -= 1
+    i -= 1
+
     
-      
-  
-  
-      
-  
-  
+    
+
   return RCPT1
 
   
@@ -130,14 +140,6 @@ while pop == True:
   op = int(input("Elegi la zona a sortear: "))
 
   
-  
-  
-  
-  
-  
-  
-  
-  
 #---------------------ZONA A----------------------------
   
   if op == 1:
@@ -160,7 +162,8 @@ while pop == True:
     lista_med = list(dfA["medidor"])
     
     lista_sum = list(dfA["suministro"])
-    
+
+       
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
 
     
@@ -169,7 +172,7 @@ while pop == True:
     
     RCPT1 = RCPT1a
     
-    RCPT1a["zona"] = "A"
+    RCPT1a["Zona"] = "A"
 
   
     
@@ -204,7 +207,7 @@ while pop == True:
     
     RCPT1 = RCPT1b
     
-    RCPT1b["zona"] = "B"
+    RCPT1b["Zona"] = "B"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1b])
 
@@ -236,7 +239,7 @@ while pop == True:
 
     RCPT1 = RCPT1c
     
-    RCPT1c["zona"] = "C"
+    RCPT1c["Zona"] = "C"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1c])
 
@@ -267,7 +270,7 @@ while pop == True:
     
     RCPT1 = RCPT1d
     
-    RCPT1d["zona"] = "D"
+    RCPT1d["Zona"] = "D"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1d])
 
@@ -298,7 +301,7 @@ while pop == True:
     
     RCPT1 = RCPT1e
     
-    RCPT1e["zona"] = "E"
+    RCPT1e["Zona"] = "E"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1e])
 
@@ -331,7 +334,7 @@ while pop == True:
     
     RCPT1 = RCPT1f
     
-    RCPT1f["zona"] = "F"
+    RCPT1f["Zona"] = "F"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1f])
 
@@ -364,7 +367,7 @@ while pop == True:
     
     RCPT1 = RCPT1g
     
-    RCPT1g["zona"] = "G"
+    RCPT1g["Zona"] = "G"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1g])
 
@@ -395,7 +398,7 @@ while pop == True:
     
     RCPT1 = RCPT1h
     
-    RCPT1h["zona"] = "H"
+    RCPT1h["Zona"] = "H"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1h])
 
@@ -425,7 +428,7 @@ while pop == True:
     
     RCPT1 = RCPT1i
     
-    RCPT1i["zona"] = "I"
+    RCPT1i["Zona"] = "I"
     
     RCPT1t = pd.concat([RCPT1t,RCPT1i])
 
@@ -433,7 +436,18 @@ while pop == True:
   
   elif op == 10:
 
-    RCPT1t.to_csv('RCPT1')   # LINEA PARA EXPORTAR
+    RCPT1 = RCPT1t
+    
+    RCPT1 = RCPT1.astype("str")
+
+    RCPT1["Codigo"] = "205" + "_" + RCPT1.Suministros + "_" + RCPT1.Zona + "_" + "22" + "_" + "2" + "_" + RCPT1.Codigo 
+
+    RCPT1 = pd.DataFrame(RCPT1, columns = ['Estado','Distrito','Distribuidor', 'Suministros', 'Zona', 'Anno', 'Semestre', 'Leyenda', 'Codigo', 'N registrador asociado', 'QS instalacion', 'Se cerro QS de instalacion?', 'QS de desinstalacion', 'Descarga de datos?', 'Mono o trifa?', 'Edificio?', 'Observaciones'])
+
+    print(RCPT1)
+
+    
+    RCPT1.to_csv('RCPT1')   # LINEA PARA EXPORTAR
 
     
 
@@ -455,7 +469,7 @@ while pop == True:
     pop == False
 
 
-#---------Generacion RCPT1-------------
+
 
 
   
@@ -468,15 +482,3 @@ while pop == True:
 
 
 
-
-#---------------EXPORTACION--------------
-
-# RCPT1.to_csv('RCPT1')   # LINEA PARA EXPORTAR
-
-
-
-
-#dfB = df[ (df[ "distrito"] == 2) |
- #         (df[ "distrito"] == 3)
-  #        
-   # 
