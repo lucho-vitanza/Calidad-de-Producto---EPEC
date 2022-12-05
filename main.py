@@ -1,3 +1,14 @@
+#notas a tener en cuenta:
+#El nombre del archivo a subir debe tener el nombre de "bruta", de lo contrario modicar en linea de lectura de csv el nombre
+
+#El archivo que se sube, DEBE ESTAR EN CSV. es decir, deben estar separados por una coma, de lo contrario habra error en la ejecucion
+
+
+#Revisar que las filas no tengan informacion que no corresponda a Suministro, distrito y medidor
+
+#Corroborar los nombres del titulo, "Servicio,Distrito,Medidor"
+
+
 #-----------------LIBRERIAS---------------------------
 
 import pandas as pd
@@ -5,11 +16,12 @@ import pandas as pd
 import math 
 
 
+
 #------------------MANIPULACION TABLA-----------------
 
 #----LECTURA CSV------------------------
 
-df = pd.read_csv('bruta_mayor40.csv', delimiter = "," )
+df = pd.read_csv('potencias_mayores_40.csv', delimiter = "," )
 
 #print(df.shape)
 #print(df.info)
@@ -24,12 +36,13 @@ df.rename(columns={"Servicio":"suministro", "Distrito":"distrito", "Medidor":"me
 
 df = df.astype("Int32")
 
-print(df.dtypes)
+#print(df.dtypes)
 
 #--------SACAR LOS MUERTOS------
 
 df = df.dropna() #Elimina los NaN
 # df = df.fillna(0) #rellena los que no tienen datos con 0
+
 
 
 
@@ -39,6 +52,24 @@ lista_sum_sorteados = []
 lista_med_sorteados = []
 
 
+#------variables por default -----------------------------
+estado = 'Sorteado'
+anno = 22
+semestre = 2
+RCPT1t = pd.DataFrame()
+
+
+def configuracion(estado,anno,semestre):
+      
+  estado = input('Ingrese un estado("sorteado" by default): ' )
+    
+  anno = input('Año("22" by default): ' )
+  
+  semestre = input('Semestre("2" by default): ' )
+
+  return (estado, anno, semestre)
+    
+
 
 op = 0
 
@@ -47,15 +78,17 @@ tamanno_muestra = 0
 
 
 #---------------PROCESO --------------------
-def proceso(Cantsort,lista_med,lista_sum): 
+def proceso(Cantsort,lista_med,lista_sum,lista_dist): 
   
   i = 0
   lista_num_sorteados = []
   lista_med_sorteados = []
   lista_sum_sorteados = []
+  lista_dist_sorteados = []
   lista_tpunto = []
   
-  while i < Cantsort * 2: 
+  
+  while i < (Cantsort * 2): 
       
     i += 1
 
@@ -72,6 +105,8 @@ def proceso(Cantsort,lista_med,lista_sum):
       
       lista_sum_sorteados.append(lista_sum[num_sorteado - 1])
 
+      lista_dist_sorteados.append(lista_dist[num_sorteado -1])
+
       for x in range(0,len(lista_sum_sorteados)):
   
         if x % 2 == 0:
@@ -84,21 +119,18 @@ def proceso(Cantsort,lista_med,lista_sum):
 
       lista_tpunto.append(tpunto)
 
+      
+
   
 
-      RCPT1 = pd.DataFrame({'Suministros' : lista_sum_sorteados, 'Medidores' : lista_med_sorteados, 'Codigo' : lista_tpunto}) 
-
+      RCPT1 = pd.DataFrame({'Suministros' : lista_sum_sorteados, 'Medidores' : lista_med_sorteados, 'Distrito': lista_dist_sorteados, 'Identificador' : lista_tpunto}) 
+     
       
-      
-      
-
-      
-      
-  else:
-
-    print("No te haga' el vivo")
-      
-    i -= 1
+    else:
+  
+      print("No te haga' el vivo")
+        
+      i -= 1
 
     
     
@@ -109,7 +141,6 @@ def proceso(Cantsort,lista_med,lista_sum):
 
   
   
-
 
 #-------------------MENU---------------------
 
@@ -127,8 +158,7 @@ Menu
 8-Zona H
 9-Zona I
 10-Exportar RCPT1
-11-Exportar RCPT1 de ultima zona sorteada
-12-Salir
+11-Configuracion
 
 """
 
@@ -145,7 +175,7 @@ while pop == True:
   if op == 1:
 
     
-    RCPT1t = pd.DataFrame()
+    
     RCPT1a = pd.DataFrame()
   
     print( "*" * 10 + "--------ZONA A----------" + "*" * 10)
@@ -163,12 +193,14 @@ while pop == True:
     
     lista_sum = list(dfA["suministro"])
 
-       
+    lista_dist = list(dfA["distrito"])
+
+           
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
 
     
     
-    RCPT1a = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1a = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1a
     
@@ -184,7 +216,8 @@ while pop == True:
   #---------------Zona B--------------------
     
   elif op == 2:
-
+    
+    
     RCPT1b = pd.DataFrame()
     
     print( "*" * 15 + "---------ZONA B----------" + "*" * 15)
@@ -200,10 +233,14 @@ while pop == True:
     lista_med = list(dfB["medidor"])
     
     lista_sum = list(dfB["suministro"])
+
+    lista_dist = list(dfB["distrito"])
+
+   
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1b = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1b = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1b
     
@@ -232,10 +269,12 @@ while pop == True:
     lista_med = list(dfC["medidor"])
     
     lista_sum = list(dfC["suministro"])
+
+    lista_dist = list(dfC["distrito"])
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1c = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1c = proceso(Cantsort,lista_med,lista_sum,lista_dist)
 
     RCPT1 = RCPT1c
     
@@ -263,10 +302,12 @@ while pop == True:
     lista_med = list(dfD["medidor"])
     
     lista_sum = list(dfD["suministro"])
+
+    lista_dist = list(dfD["distrito"])
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1d = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1d = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1d
     
@@ -294,10 +335,12 @@ while pop == True:
     lista_med = list(dfE["medidor"])
     
     lista_sum = list(dfE["suministro"])
+
+    lista_dist = list(dfE["distrito"])
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1e = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1e = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1e
     
@@ -327,10 +370,12 @@ while pop == True:
     lista_med = list(dfF["medidor"])
     
     lista_sum = list(dfF["suministro"])
+
+    lista_dist = list(dfF["distrito"])
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1f = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1f = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1f
     
@@ -360,10 +405,14 @@ while pop == True:
     lista_med = list(dfG["medidor"])
     
     lista_sum = list(dfG["suministro"])
+
+    lista_dist = list(dfG["distrito"])
+
+
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1g = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1g = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1g
     
@@ -391,10 +440,12 @@ while pop == True:
     lista_med = list(dfH["medidor"])
     
     lista_sum = list(dfH["suministro"])
+
+    lista_dist = list(dfH["distrito"])
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1h = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1h = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1h
     
@@ -421,10 +472,12 @@ while pop == True:
     lista_med = list(dfI["medidor"])
     
     lista_sum = list(dfI["suministro"])
+
+    lista_dist = list(dfI["distrito"])
     
     print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
   
-    RCPT1i = proceso(Cantsort,lista_med,lista_sum)
+    RCPT1i = proceso(Cantsort,lista_med,lista_sum,lista_dist)
     
     RCPT1 = RCPT1i
     
@@ -440,13 +493,25 @@ while pop == True:
     
     RCPT1 = RCPT1.astype("str")
 
-    RCPT1["Codigo"] = "205" + "_" + RCPT1.Suministros + "_" + RCPT1.Zona + "_" + "22" + "_" + "2" + "_" + RCPT1.Codigo 
+    RCPT1["Codigo"] = "205" + "_" + RCPT1.Suministros + "_" + RCPT1.Zona + "_" + "22" + "_" + "2" + "_" + RCPT1.Identificador 
 
-    RCPT1 = pd.DataFrame(RCPT1, columns = ['Estado','Distrito','Distribuidor', 'Suministros', 'Zona', 'Anno', 'Semestre', 'Leyenda', 'Codigo', 'N registrador asociado', 'QS instalacion', 'Se cerro QS de instalacion?', 'QS de desinstalacion', 'Descarga de datos?', 'Mono o trifa?', 'Edificio?', 'Observaciones'])
+    RCPT1 = pd.DataFrame(RCPT1, columns = ['Estado' , 'Distrito','Distribuidor', 'Suministros', 'Zona', 'Anno', 'Semestre', 'Leyenda', 'Codigo', 'N registrador asociado', 'QS instalacion', 'Se cerro QS de instalacion?', 'QS de desinstalacion', 'Descarga de datos?', 'Mono o trifa?', 'Edificio?', 'Observaciones'])
+
+    RCPT1['Estado'] = estado
+
+    RCPT1['Distrito'] = RCPT1.Distrito
+
+    RCPT1['Distribuidor'] = '205'
+
+    RCPT1['Anno'] = anno 
+
+    RCPT1['Semestre'] = semestre 
+
+    RCPT1['Descarga de datos'] = 'NO' 
 
     print(RCPT1)
 
-    
+        
     RCPT1.to_csv('RCPT1')   # LINEA PARA EXPORTAR
 
     
@@ -455,18 +520,14 @@ while pop == True:
 
     
     
-    RCPT1.to_csv('RCPT1')   # LINEA PARA EXPORTAR
+   estado, anno, semestre = configuracion(estado, anno, semestre)
 
-  
-  elif op == 12:
-    
-    pop == False
   
   else:
   
     print("--No te hagas el vivo--")
 
-    pop == False
+  pop == False
 
 
 
