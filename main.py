@@ -23,6 +23,10 @@ import math
 
 df = pd.read_csv('potencias_mayores_40.csv', delimiter = "," )
 
+#df = pd.read_csv('https://www.dropbox.com/s/5g6h4wjhon8c074/potencias_mayores_40.csv?dl=0', error_bad_lines=False) 
+
+
+
 #print(df.shape)
 #print(df.info)
 
@@ -94,9 +98,21 @@ def proceso(Cantsort,lista_med,lista_sum,lista_dist):
 
     print("Ingrese " + str(i) + " numero sorteado : ") 
         
-    num_sorteado = int(input())
+    try: 
+      
+      num_sorteado = int(input())
 
+    except ValueError as error:
 
+      print(error)
+      print('Ingrese un valor entero')
+      i -= 1
+      
+    
+
+    
+
+    
     if num_sorteado <= len(lista_med):
     
       lista_num_sorteados.append(num_sorteado)
