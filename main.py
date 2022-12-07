@@ -8,6 +8,10 @@
 
 #Corroborar los nombres del titulo, "Servicio,Distrito,Medidor"
 
+#El sorteo se realiza con la pagina https://random.uchile.cl/
+
+
+
 
 #-----------------LIBRERIAS---------------------------
 
@@ -212,8 +216,7 @@ while pop == True:
     lista_dist = list(dfA["distrito"])
 
            
-    print("La cantidad de numeros a sortear son " + str(Cantsort) + " de " + str(len(lista_med)))
-
+    print("La cantidad de numeros a sortear son " + str(Cantsort*2) + " de " + str(len(lista_med)))
     
     
     RCPT1a = proceso(Cantsort,lista_med,lista_sum,lista_dist)
@@ -511,7 +514,7 @@ while pop == True:
 
     RCPT1["Codigo"] = "205" + "_" + RCPT1.Suministros + "_" + RCPT1.Zona + "_" + "22" + "_" + "2" + "_" + RCPT1.Identificador 
 
-    RCPT1 = pd.DataFrame(RCPT1, columns = ['Estado' , 'Distrito','Distribuidor', 'Suministros', 'Zona', 'Anno', 'Semestre', 'Leyenda', 'Codigo', 'N registrador asociado', 'QS instalacion', 'Se cerro QS de instalacion?', 'QS de desinstalacion', 'Descarga de datos?', 'Mono o trifa?', 'Edificio?', 'Observaciones'])
+    RCPT1 = pd.DataFrame(RCPT1, columns = ['Estado' , 'Distrito','Distribuidora', 'Suministros', 'Zona', 'Anno', 'Semestre', 'Leyenda', 'Codigo', 'N registrador asociado', 'QS instalacion', 'Se cerro QS de instalacion?', 'QS de desinstalacion', 'Descarga de datos?', 'Mono o trifa?', 'Edificio?', 'Observaciones'])
 
     RCPT1['Estado'] = estado
 
